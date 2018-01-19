@@ -1,0 +1,8 @@
+server:
+  port: 8090
+  servlet-path: /
+logging:
+  config: classpath:logback-spring.xml
+
+app:
+  version: /v1
