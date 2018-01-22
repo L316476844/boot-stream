@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
  * Version: V1.0.0
  */
 @RestController
-@RequestMapping("/{version}/api")
+@RequestMapping("/api/{version}")
 public class StreamController {
 
     /**

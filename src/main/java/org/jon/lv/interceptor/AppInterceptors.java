@@ -42,7 +42,7 @@ public class AppInterceptors extends WebMvcConfigurerAdapter{
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new ApiInterceptor()).addPathPatterns("/{version}/api/*");
+        registry.addInterceptor(new ApiInterceptor()).addPathPatterns("/api/{version}/*");
     }
 
     /**
