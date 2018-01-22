@@ -13,6 +13,7 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
+import java.util.regex.Pattern;
 
 /**
  * Package: org.jon.lv.interceptor.AppInterceptors
@@ -25,6 +26,9 @@ import java.io.BufferedReader;
  */
 @Configuration
 public class AppInterceptors extends WebMvcConfigurerAdapter{
+
+    // 路径中版本的前缀， 这里用 /v[1-9]/的形式
+    private final static Pattern VERSION_PREFIX_PATTERN = Pattern.compile("v(\\d+)/");
 
     @Value("${app.version}")
     private String APP_VERSION;
@@ -73,8 +77,10 @@ public class AppInterceptors extends WebMvcConfigurerAdapter{
                 avoidSign = authPower.avoidSign();
             }
 
+            String version = "/api/".concat(APP_VERSION);
+
             // 版本号校验
-            if(!avoidVersion && !uri.startsWith(APP_VERSION)){
+            if(!avoidVersion && !uri.startsWith(version)){
                 throw new AppWebException("-----wrong version no access to visited----");
             }
 
