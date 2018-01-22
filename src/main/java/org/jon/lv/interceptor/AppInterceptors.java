@@ -81,7 +81,7 @@ public class AppInterceptors extends WebMvcConfigurerAdapter{
 
             // 版本号校验
             if(!avoidVersion && !uri.startsWith(version)){
-                throw new AppWebException("-----wrong version no access to visited----");
+                throw new AppWebException("-----invalid api version,access denied !----");
             }
 
             String tokenKey = request.getHeader(DEFAULT_TOKEN_NAME);
@@ -90,18 +90,19 @@ public class AppInterceptors extends WebMvcConfigurerAdapter{
             if(!avoidLogin){
                 // tokenKey 是否为空  以及redis中获取token是否存在
                 if(StringUtils.isEmpty(tokenKey)){
-                    throw new AppWebException("-----please after login request----");
+                    throw new AppWebException("-----please log in to access this method !----");
                 }
             }
 
             if(!avoidPower){
                 // 需要判断用户是否有权访问接口 -- db内配置用户角色接口访问权限
-                throw new AppWebException("-----no power to visited method----");
+                throw new AppWebException("-----authorization is required to access this method !----");
             }
 
             if(!avoidSign){
                 // 判断是否需要校验参数规则  是否验签名
-                throw new AppWebException("----- error sign can not visited ----");
+                throw new AppWebException("-----invalid signature,access denied !----");
+
             }
 
             if(request instanceof BodyReaderHttpServletRequestWrapper){
