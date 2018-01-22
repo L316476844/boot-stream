@@ -91,6 +91,8 @@ public class AppInterceptors extends WebMvcConfigurerAdapter{
                 // tokenKey 是否为空  以及redis中获取token是否存在
                 if(StringUtils.isEmpty(tokenKey)){
                     throw new AppWebException("-----please log in to access this method !----");
+                }else {
+                    //user-token  split
                 }
             }
 

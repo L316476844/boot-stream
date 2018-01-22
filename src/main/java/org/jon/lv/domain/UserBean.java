@@ -18,6 +18,8 @@ public class UserBean implements Serializable{
 
     private String name;
 
+    private String password;
+
     private Integer age;
 
     private String address;
@@ -49,6 +51,14 @@ public class UserBean implements Serializable{
 
     public String getAddress() {
         return address;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public void setAddress(String address) {
