@@ -16,6 +16,7 @@ public class UserRepositoryImpl implements UserRepository{
     public UserBean findByNameAndPwd(UserBean user) {
         if (user!=null){
             user.setId(new Random().nextLong());
+            return user;
         }
         return null;
     }

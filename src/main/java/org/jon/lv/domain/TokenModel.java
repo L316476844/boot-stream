@@ -5,6 +5,7 @@ package org.jon.lv.domain;
  */
 public class TokenModel {
 
+
     /**
      * 用户id
      */

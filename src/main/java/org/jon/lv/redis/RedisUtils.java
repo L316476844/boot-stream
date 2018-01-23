@@ -102,6 +102,16 @@ public class RedisUtils {
         }
         return result;
     }
+
+    /**
+     * 设置过期时间
+     * @param key
+     * @param expireTime
+     * @param unit
+     */
+    public static void expire(final String key, Long expireTime,TimeUnit unit) {
+        redisTemplate.expire(key, expireTime, unit);
+    }
     /**
      * 写入缓存
      *

@@ -16,12 +16,38 @@ import java.util.concurrent.TimeUnit;
 public class TokenRepositoryImpl implements TokenRepository{
 
     @Override
-    public TokenModel generateToken(Long userId) {
+    public TokenModel generateToken(Long userId,int platform) {
+
+        String tokenKey=userId+"_"+platform;
+
+
         //生成uuid作为token
         String token = UUID.randomUUID().toString().replace("-", "");
         TokenModel model = new TokenModel(userId, token);
 
-        RedisUtils.set(userId+"",token, TokenContants.TOKEN_EXPIRES_TIME, TimeUnit.HOURS);
-        return null;
+        if (RedisUtils.exists(tokenKey)){
+            deleteToken(userId,platform);
+        }
+        RedisUtils.set(tokenKey,token, TokenContants.TOKEN_EXPIRES_TIME, TokenContants.TOKEN_EXPIRES_TIMEUNIT);
+        return model;
+    }
+
+    @Override
+    public void deleteToken(Long userId,int platform) {
+
+        RedisUtils.remove(userId+"_"+platform);
+    }
+
+    @Override
+    public boolean checkToken(Long userId, int platform,String token) {
+        String tokenKey=userId+"_"+platform;
+
+        String tokenRedis= (String) RedisUtils.get(tokenKey);
+
+        if (tokenRedis!=null&&tokenRedis.equals(token)){
+            RedisUtils.expire(tokenKey,TokenContants.TOKEN_EXPIRES_TIME, TokenContants.TOKEN_EXPIRES_TIMEUNIT);
+            return true;
+        }
+        return false;
     }
 }

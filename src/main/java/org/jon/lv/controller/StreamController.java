@@ -71,4 +71,19 @@ public class StreamController {
         resultDO.setData(JSON.toJSONString(user));
         return resultDO;
     }
+
+    /**
+     * 测试Token
+     * @param id
+     * @return
+     */
+    @AuthPower(avoidVersion = true,avoidPower = true,avoidSign = true,avoidLogin = false)
+    @RequestMapping(value = "delete.do",method = RequestMethod.POST)
+    public ResultDO<String> detail(Long id){
+        ResultDO<String> resultDO = new ResultDO<>();
+        resultDO.setSuccess(true);
+
+        return resultDO;
+    }
+
 }
