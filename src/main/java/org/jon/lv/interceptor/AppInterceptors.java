@@ -2,6 +2,8 @@ package org.jon.lv.interceptor;
 
 import org.jon.lv.annotation.AuthPower;
 import org.jon.lv.exception.AppWebException;
+import org.jon.lv.repository.TokenRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.StringUtils;
@@ -33,7 +35,6 @@ public class AppInterceptors extends WebMvcConfigurerAdapter{
     @Value("${app.version}")
     private String APP_VERSION;
 
-
     /**
      * 默认请求request header 头部存放 token 名称
      */
@@ -43,6 +44,13 @@ public class AppInterceptors extends WebMvcConfigurerAdapter{
      * 参数加密值
      */
     public String DEFAULT_AUTH_NAME = "X-Auth";
+
+    public String DEFAULT_PLATFORM = "X-Platform";
+
+    @Autowired
+    private TokenRepository tokenRepository;
+
+
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
@@ -84,13 +92,26 @@ public class AppInterceptors extends WebMvcConfigurerAdapter{
                 throw new AppWebException("-----invalid api version,access denied !----");
             }
 
-            String tokenKey = request.getHeader(DEFAULT_TOKEN_NAME);
+            String tokenAuth = request.getHeader(DEFAULT_TOKEN_NAME);
 
             // 登录校验
             if(!avoidLogin){
-                // tokenKey 是否为空  以及redis中获取token是否存在
-                if(StringUtils.isEmpty(tokenKey)){
+                // token 是否为空  以及redis中获取token是否存在
+                if(StringUtils.isEmpty(tokenAuth)){
                     throw new AppWebException("-----please log in to access this method !----");
+                }else {
+                    //userid-token  split
+                    int platform = request.getIntHeader(DEFAULT_PLATFORM);
+                    String[] tokenAuthArray=tokenAuth.split("_");
+                    if (tokenAuthArray!=null&&tokenAuthArray.length==2){
+                        boolean check=tokenRepository.checkToken(Long.valueOf(tokenAuthArray[0]),platform,tokenAuthArray[1]);
+                        if (!check){
+                            throw new AppWebException("-----invalid token,re-login please !----");
+                        }
+                    }else {
+                        throw new AppWebException("-----invalid token,re-login please !----");
+                    }
+
                 }
             }
 

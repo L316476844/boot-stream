@@ -11,12 +11,14 @@ import java.io.Serializable;
  * Date: 2018/1/19 14:01
  * Version: V1.0.0
  */
-public class UserBean implements Serializable{
+public class UserBean extends BasicBean implements Serializable{
     private static final long serialVersionUID = 4264329146861798867L;
 
     private Long id;
 
     private String name;
+
+    private String password;
 
     private Integer age;
 
@@ -49,6 +51,14 @@ public class UserBean implements Serializable{
 
     public String getAddress() {
         return address;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public void setAddress(String address) {
