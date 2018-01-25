@@ -11,7 +11,7 @@ import java.io.Serializable;
  * Date: 2018/1/19 14:01
  * Version: V1.0.0
  */
-public class UserBean extends BasicBean implements Serializable{
+public class UserBean implements Serializable{
     private static final long serialVersionUID = 4264329146861798867L;
 
     private Long id;

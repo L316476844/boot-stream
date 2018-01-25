@@ -3,9 +3,16 @@ package org.jon.lv.common;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Created by Jack on 2018/1/22.
+ *
+ * @author Jack
+ * @date 2018/1/22
  */
-public class TokenContants {
+public class TokenConstants {
+
+    /**
+     * 请求平台
+     */
+    public static final String X_PLATFORM = "X-Platform";
 
     /**
      * 过期时间
@@ -21,5 +28,8 @@ public class TokenContants {
      */
     public static final boolean ENABLE_MULTI_CLIENT = true;
 
-
+    /**
+     * 登录用户的redis key  前缀
+     */
+    public static final String LOGIN_USER_KEY = "LOGIN_USER_KEY_";
 }

@@ -1,48 +1,32 @@
 package org.jon.lv.controller;
 
-import org.jon.lv.domain.TokenModel;
+import org.jon.lv.annotation.AuthPower;
+import org.jon.lv.common.TokenConstants;
 import org.jon.lv.domain.UserBean;
-import org.jon.lv.repository.TokenRepository;
+import org.jon.lv.enums.PlatformType;
 import org.jon.lv.repository.UserRepository;
 import org.jon.lv.result.ResultDO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
- * Created by Jack on 2018/1/22.
+ * @author Jack
+ * @date 2018/1/22
  */
 @RestController
-@RequestMapping("/token/")
+@RequestMapping("/api/{version}")
 public class TokenController {
 
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private TokenRepository tokenRepository;
+    @AuthPower(avoidLogin = true, avoidVersion = true, avoidSign = true)
+    @PostMapping("/token")
+    public ResultDO<String> token(@RequestParam("username")String username,
+                                  @RequestParam("password")String password,
+                                  @RequestHeader(TokenConstants.X_PLATFORM)String platform
+                                  ) {
 
-    @RequestMapping(value = "login.do",method = RequestMethod.POST)
-    public ResultDO<TokenModel> login(UserBean user){
-
-        ResultDO<TokenModel> resultDO = new ResultDO<>();
-
-        UserBean userBean=userRepository.findByNameAndPwd(user);
-        System.out.println("uid======="+userBean.getId());
-        if (userBean!=null){
-
-            TokenModel tokenModel=tokenRepository.generateToken(userBean.getId(),user.getPlatform());
-
-            resultDO.setSuccess(true);
-            resultDO.setData(tokenModel);
-            resultDO.setErrMsg("登录成功");
-
-            return resultDO;
-        }
-        resultDO.setSuccess(false);
-        resultDO.setErrMsg("登录失败");
-
-        return resultDO;
+        return userRepository.login(username, password, PlatformType.getTypeByPlatform(platform));
     }
 }

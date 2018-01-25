@@ -1,8 +1,10 @@
 package org.jon.lv.interceptor;
 
 import org.jon.lv.annotation.AuthPower;
+import org.jon.lv.common.TokenConstants;
+import org.jon.lv.enums.PlatformType;
 import org.jon.lv.exception.AppWebException;
-import org.jon.lv.repository.TokenRepository;
+import org.jon.lv.redis.RedisUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -47,10 +49,6 @@ public class AppInterceptors extends WebMvcConfigurerAdapter{
 
     public String DEFAULT_PLATFORM = "X-Platform";
 
-    @Autowired
-    private TokenRepository tokenRepository;
-
-
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
@@ -85,6 +83,12 @@ public class AppInterceptors extends WebMvcConfigurerAdapter{
                 avoidSign = authPower.avoidSign();
             }
 
+            String platform =  request.getHeader(TokenConstants.X_PLATFORM);
+
+            if(StringUtils.isEmpty(platform) || PlatformType.getTypeByPlatform(platform) == null){
+                throw new AppWebException("-----invalid platform please !----");
+            }
+
             String version = "/api/".concat(APP_VERSION);
 
             // 版本号校验
@@ -99,20 +103,15 @@ public class AppInterceptors extends WebMvcConfigurerAdapter{
                 // token 是否为空  以及redis中获取token是否存在
                 if(StringUtils.isEmpty(tokenAuth)){
                     throw new AppWebException("-----please log in to access this method !----");
-                }else {
-                    //userid-token  split
-                    int platform = request.getIntHeader(DEFAULT_PLATFORM);
-                    String[] tokenAuthArray=tokenAuth.split("_");
-                    if (tokenAuthArray!=null&&tokenAuthArray.length==2){
-                        boolean check=tokenRepository.checkToken(Long.valueOf(tokenAuthArray[0]),platform,tokenAuthArray[1]);
-                        if (!check){
-                            throw new AppWebException("-----invalid token,re-login please !----");
-                        }
-                    }else {
-                        throw new AppWebException("-----invalid token,re-login please !----");
-                    }
-
                 }
+
+                Long userId = (Long)RedisUtils.get(tokenAuth);
+                if(userId == null){
+                    throw new AppWebException("-----login expired,re-login please !----");
+                }
+
+                // 延长token时间
+                RedisUtils.set(tokenAuth, userId, TokenConstants.TOKEN_EXPIRES_TIME);
             }
 
             if(!avoidPower){

@@ -18,11 +18,13 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 import java.lang.reflect.Method;
 
 /**
- * Created by Jack on 2018/1/22.
+ * @author Jack
+ * @date 2018/1/22
  */
 @Configuration
 @EnableCaching
 public class RedisConfig extends CachingConfigurerSupport {
+    @Override
     @Bean
     public KeyGenerator keyGenerator() {
         return new KeyGenerator() {
@@ -41,6 +43,7 @@ public class RedisConfig extends CachingConfigurerSupport {
 
     /**
      * RedisTemplate配置
+     *
      * @return
      */
     @Bean
@@ -64,6 +67,7 @@ public class RedisConfig extends CachingConfigurerSupport {
      * 管理缓存
      * 设置缓存对象的序列化方式,不设置会报错
      * 另外对于json序列化,对象要提供默认空构造器
+     *
      * @param redisTemplate
      * @return
      */
@@ -77,7 +81,7 @@ public class RedisConfig extends CachingConfigurerSupport {
         redisTemplate.setValueSerializer(jackson2JsonRedisSerializer);
 
         RedisCacheManager cacheManager = new RedisCacheManager(redisTemplate);
-        cacheManager.setDefaultExpiration(300);//秒
+        cacheManager.setDefaultExpiration(300);
         return cacheManager;
     }
 }
