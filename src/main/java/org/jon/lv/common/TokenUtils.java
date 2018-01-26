@@ -32,7 +32,7 @@ public class TokenUtils {
             RedisUtils.remove(object.toString());
         }
         /** 永久记忆 **/
-        RedisUtils.put(redisKey, platform.getPlatform(), String.valueOf(userId), -1);
+        RedisUtils.put(redisKey, platform.getPlatform(), token, -1);
         RedisUtils.set(token, userId, TokenConstants.TOKEN_EXPIRES_TIME);
 
         return token;
