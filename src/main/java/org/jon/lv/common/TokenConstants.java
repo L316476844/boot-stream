@@ -32,4 +32,9 @@ public class TokenConstants {
      * 登录用户的redis key  前缀
      */
     public static final String LOGIN_USER_KEY = "LOGIN_USER_KEY_";
+
+    /**
+     * 当前登录用户
+     */
+    public static final String CURRENT_LOGIN_TOKEN = "CURRENT_LOGIN_TOKEN";
 }

@@ -33,7 +33,9 @@ public class TokenUtils {
         }
         /** 永久记忆 **/
         RedisUtils.put(redisKey, platform.getPlatform(), token, -1);
-        RedisUtils.set(token, userId, TokenConstants.TOKEN_EXPIRES_TIME);
+
+        /** 存放token **/
+        RedisUtils.put(TokenConstants.CURRENT_LOGIN_TOKEN, token, String.valueOf(userId), TokenConstants.TOKEN_EXPIRES_TIME);
 
         return token;
     }
@@ -53,17 +55,17 @@ public class TokenUtils {
         Object android = RedisUtils.get(redisKey, PlatformType.ANDROID.getPlatform());
 
         if(pc != null){
-            RedisUtils.remove(pc.toString());
+            RedisUtils.remove(TokenConstants.CURRENT_LOGIN_TOKEN, pc.toString());
             RedisUtils.remove(redisKey, PlatformType.PC.getPlatform());
         }
 
         if(ios != null){
-            RedisUtils.remove(ios.toString());
+            RedisUtils.remove(TokenConstants.CURRENT_LOGIN_TOKEN, ios.toString());
             RedisUtils.remove(redisKey, PlatformType.IOS.getPlatform());
         }
 
         if(android != null){
-            RedisUtils.remove(android.toString());
+            RedisUtils.remove(TokenConstants.CURRENT_LOGIN_TOKEN, android.toString());
             RedisUtils.remove(redisKey, PlatformType.ANDROID.getPlatform());
         }
     }

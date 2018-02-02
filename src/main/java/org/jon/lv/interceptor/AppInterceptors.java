@@ -105,13 +105,13 @@ public class AppInterceptors extends WebMvcConfigurerAdapter{
                     throw new AppWebException("-----please log in to access this method !----");
                 }
 
-                Long userId = (Long)RedisUtils.get(tokenAuth);
+                Long userId = (Long)RedisUtils.get(TokenConstants.CURRENT_LOGIN_TOKEN, tokenAuth);
                 if(userId == null){
                     throw new AppWebException("-----login expired,re-login please !----");
                 }
 
                 // 延长token时间
-                RedisUtils.set(tokenAuth, userId, TokenConstants.TOKEN_EXPIRES_TIME);
+                RedisUtils.put(TokenConstants.CURRENT_LOGIN_TOKEN, tokenAuth, String.valueOf(userId), TokenConstants.TOKEN_EXPIRES_TIME);
             }
 
             if(!avoidPower){
